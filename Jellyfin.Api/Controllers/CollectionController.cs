@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Jellyfin.Api.Constants;
 using Jellyfin.Api.Extensions;
 using Jellyfin.Api.ModelBinders;
+using MediaBrowser.Common.Api;
 using MediaBrowser.Controller.Collections;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Model.Collections;
@@ -49,7 +50,7 @@ public class CollectionController : BaseJellyfinApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<CollectionCreationResult>> CreateCollection(
         [FromQuery] string? name,
-        [FromQuery, ModelBinder(typeof(CommaDelimitedArrayModelBinder))] string[] ids,
+        [FromQuery, ModelBinder(typeof(CommaDelimitedCollectionModelBinder))] string[] ids,
         [FromQuery] Guid? parentId,
         [FromQuery] bool isLocked = false)
     {
@@ -85,7 +86,7 @@ public class CollectionController : BaseJellyfinApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> AddToCollection(
         [FromRoute, Required] Guid collectionId,
-        [FromQuery, Required, ModelBinder(typeof(CommaDelimitedArrayModelBinder))] Guid[] ids)
+        [FromQuery, Required, ModelBinder(typeof(CommaDelimitedCollectionModelBinder))] Guid[] ids)
     {
         await _collectionManager.AddToCollectionAsync(collectionId, ids).ConfigureAwait(true);
         return NoContent();
@@ -102,7 +103,7 @@ public class CollectionController : BaseJellyfinApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> RemoveFromCollection(
         [FromRoute, Required] Guid collectionId,
-        [FromQuery, Required, ModelBinder(typeof(CommaDelimitedArrayModelBinder))] Guid[] ids)
+        [FromQuery, Required, ModelBinder(typeof(CommaDelimitedCollectionModelBinder))] Guid[] ids)
     {
         await _collectionManager.RemoveFromCollectionAsync(collectionId, ids).ConfigureAwait(false);
         return NoContent();
